@@ -1,3 +1,3 @@
 # ACCIM
-![Alt text]("frontend.png" "Title")
+![APP Preview Image](frontend.png)
 
