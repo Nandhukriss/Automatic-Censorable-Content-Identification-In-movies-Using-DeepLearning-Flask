@@ -76,11 +76,11 @@ def detect(test_input):
 def index():
     return render_template(
         "index.html", 
-        ori_image="static/input.png", 
-        det_image="static/result.png",
+        ori_image="/static/input.png", 
+        det_image="/static/result.png",
         fName=None,
         message=None
-        )
+)
 @app.route("/about")
 def about():
     return render_template("about.html")
