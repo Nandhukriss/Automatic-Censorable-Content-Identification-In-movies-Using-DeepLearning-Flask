@@ -1,3 +1,3 @@
 # ACCIM
-![APP Preview Image](frontend.png)
+![APP Preview Image]("frontend.png")
 
