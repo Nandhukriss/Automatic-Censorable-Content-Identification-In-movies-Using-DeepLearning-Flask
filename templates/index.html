@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block body%}
+
+<div class="bg-dark text-secondary px-4 py-5 text-center mb-3">
+  <div class="py-5">
+     
+     
+    <div class="row container-fluid ">
+      <div class="col-lg-4 ">
+
+      <img  class="rounded"  width="150" height="160" src="https://www.svgrepo.com/show/189430/files-folder.svg" alt="">
+        <h2 class="text-white">Step1</h2>
+        <p class="text-white">Import Clip: Click "Choose File" and select the video.</p>
+       
+      </div><!-- /.col-lg-4 -->
+      <div class="col-lg-4">
+        <img  class="rounded"  width="150" height="160" src="https://www.svgrepo.com/show/422405/find-glass-interface.svg" alt="">
+
+
+        <h2 class="text-white">Step2</h2>
+        <p class="text-white">Detect Censorable Content: Click The Detect Button to detect.</p>
+       
+      </div><!-- /.col-lg-4 -->
+      <div class="col-lg-4">
+        <img  class="rounded"  width="150" height="160" src="https://www.svgrepo.com/show/475151/download.svg" alt="">
+
+
+        <h2 class="text-white">Step3</h2>
+        <p class="text-white">Download Output: Get the censored video.</p>
+       
+      </div><!-- /.col-lg-4 -->
+    </div>
+    
+  </div>
+</div>
+
+  
+  {% if fName %}
+    <div class="alert alert-dark" role="alert">
+      {{message}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  {% endif %}
+
+  
+  <div id="images" class="container">
+    <div class="row">
+      <div class="col-md-6 ">
+        <p id="img_title "class="font-weight-bolder text-center" >Sample Input</p>
+        <img id="picture" src={{ori_image}} class="rounded img-fluid " alt="Input">
+      </div>
+      <div class="col-md-6">
+        <p id="img_title" class="font-weight-bold">Sample Output</p>
+        <img id="picture" src={{det_image}} class="rounded img-fluid" alt="Detection">
+      </div>
+    </div>
+  </div>
+  
+  <div id="multidataTable" class="row justify-content-center ">
+    <div class="col-md-10 mt-5">
+      <table class="table table-borderless">
+        <thead>
+          <tr>
+            <form action='/detection' method='POST' enctype="multipart/form-data">
+              <th><input type="file" name='test_file' class="form-control-file " style="color: #ffc107;" ></th>
+              <th><input id=predictButton type="submit" value=Detect class="btn btn-dark"></th>
+            </form>
+            {% if fName %}
+              <form action='/download/{{fName}}' method='POST'>
+                <th><input type="submit" class="btn btn-dark" value=Download></th>
+              </form>
+            {% else %}
+              <form action='/download_error' method='POST'>
+                <th><input type="submit" class="btn btn-dark" value=Download></th>
+              </form>
+            {% endif %}
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
