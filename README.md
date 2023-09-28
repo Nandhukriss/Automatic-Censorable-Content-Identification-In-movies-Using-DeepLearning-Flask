@@ -1,3 +1,3 @@
 # ACCIM
 
-![result](frontend.png)![result](frontend.png)
+![result](img.jpg)![result](frontend.png)
