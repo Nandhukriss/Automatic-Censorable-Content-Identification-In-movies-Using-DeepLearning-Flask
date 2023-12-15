@@ -1,10 +1,12 @@
 
 from joblib import load
 import io
-from flask import Flask, render_template, request, session, send_file
+from flask import Flask, render_template, request, session, send_file,jsonify
 from flask_session import Session
 from tempfile import mkdtemp
 import os
+import subprocess
+import shutil
 from detect import run
 app = Flask(__name__)
 
@@ -32,6 +34,19 @@ IMG_EXTENSIONS = ['bmp', 'jpg', 'jpeg', 'png', 'tif', 'tiff', 'dng', 'webp', 'mp
 
 # allowed input video extensions
 VID_EXTENSIONS = ['mov', 'avi', 'mp4', 'mpg', 'mpeg', 'm4v', 'wmv', 'mkv']
+
+def extract_audio_ffmpeg(video_path, audio_path):
+    subprocess.run(['ffmpeg', '-y', '-i', video_path, '-q:a', '0', '-map', 'a', audio_path])
+
+def embed_audio_ffmpeg(video_path, audio_path, output_path):
+    # Set a temporary output path
+    temp_output_path = output_path.replace('.mp4', '_temp.mp4')
+
+    # Run FFmpeg to embed audio
+    subprocess.run(['ffmpeg', '-y', '-i', video_path, '-i', audio_path, '-c:v', 'copy', '-c:a', 'aac', '-strict', 'experimental', temp_output_path])
+
+    # Replace the original file with the temporary one
+    shutil.move(temp_output_path, output_path)
 
 
 def detect(test_input):
@@ -81,7 +96,6 @@ def index():
         fName=None,
         message=None
 )
-
 @app.route("/about")
 def about():
     return render_template("about.html")
@@ -120,15 +134,24 @@ def detection():
             file_path = os.path.join("static/test", file.filename)
             # save the file
             file.save(file_path)
+
+            # Extract audio from the video using FFmpeg
+            audio_path = os.path.join("static/test", f"extracted_audio_{file.filename}.mp3")
+            extract_audio_ffmpeg(file_path, audio_path)
+
             detect(file_path)
-            return render_template(
-                "index.html", type="primary", 
-                message="Done!, Video is ready to download.",
-                ori_image="static/input.png", 
-                det_image="static/result.png",
-                
-                fName=str(file.filename.split('.')[0])+'.mp4'
-            )
+
+            # Embed the extracted audio into the detection using FFmpeg
+            result_path = os.path.join("static/test_out", file.filename)
+            embed_audio_ffmpeg(result_path, audio_path, result_path)
+
+        
+            return jsonify({
+            'type': 'primary',
+            'message': 'Done!, Image/Video is ready to download',
+            'ori_image': f'static/test/{file.filename}',
+            'det_image': f'static/test_out/{file.filename}',
+            'fName': str(file.filename.split('.')[0])+'.mp4',})
     # if no input render an error message        
     else:
         return render_template(
@@ -139,22 +162,22 @@ def detection():
                 fName=None
             )
 
-# download the detection
-@app.route("/download/<fName>", methods=["GET", "POST"])
-def download(fName):
-    det_path = f"static/test_out/{fName}"
-    return send_file(det_path, as_attachment=True)
+# # download the detection
+# @app.route("/download/<fName>", methods=["GET", "POST"])
+# def download(fName):
+#     det_path = f"static/test_out/{fName}"
+#     return send_file(det_path, as_attachment=True)
 
-# download error handling
-@app.route("/download_error", methods=["GET", "POST"])
-def download_error():
-    return render_template(
-            "index.html", type="danger", 
-            message="Please upload a file and carryout detection.",
-            ori_image="static/input.png", 
-            det_image="static/result.png",
-            fName=None
-        )
+# # download error handling
+# @app.route("/download_error", methods=["GET", "POST"])
+# def download_error():
+#     return render_template(
+#             "index.html", type="danger", 
+#             message="Please upload a file and carryout detection.",
+#             ori_image="static/input.png", 
+#             det_image="static/result.png",
+#             fName=None
+#         )
 
 if __name__ == "__main__":
     app.run(debug=True)

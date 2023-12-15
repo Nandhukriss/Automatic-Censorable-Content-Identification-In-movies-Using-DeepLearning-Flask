@@ -2,6 +2,108 @@
 
 {% block body%}
 
+<style>
+.progress-container {
+  position: fixed;
+  bottom: 0;
+  /* left: 0; */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 9999;
+}
+
+
+.inner .one {
+  animation-delay: -0.32s;
+}
+
+.inner .two {
+  animation-delay: -0.16s;
+}
+
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% { 
+      transform: scale(0);
+  }
+  40% { 
+      transform: scale(1.0);
+  }
+}
+
+/* Add this class to hide the spinner when the content is loaded */
+
+.loader {
+  position: absolute;
+  top: calc(50% - 32px);
+  left: calc(50% - 32px);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  perspective: 800px;
+}
+
+.inner {
+  position: absolute;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;  
+}
+
+.inner.one1 {
+  left: 0%;
+  top: 0%;
+  animation: rotate-one 1s linear infinite;
+  border-bottom: 3px solid #ff0000;
+}
+
+.inner.two2 {
+  right: 0%;
+  top: 0%;
+  animation: rotate-two 1s linear infinite;
+  border-right: 3px solid #ff0000;
+}
+
+.inner.three3 {
+  right: 0%;
+  bottom: 0%;
+  animation: rotate-three 1s linear infinite;
+  border-top: 3px solid #ff0000;
+}
+
+@keyframes rotate-one {
+  0% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate-two {
+  0% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate-three {
+  0% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+  }
+}
+</style>
+
+
+
 <div class="bg-dark text-secondary px-4 py-5 text-center mb-3">
   <div class="py-5">
      
@@ -35,18 +137,28 @@
   </div>
 </div>
 
+<div class="container d-none " id="message">
+  <!-- Download Ready Message  -->
+<div class="alert alert-primary" role="alert">
+  🤖 Your File is Ready To Download 🤖
+</div>
+<!-- Download Ready Message  end -->
+</div>
   
-  {% if fName %}
-    <div class="alert alert-dark" role="alert">
-      {{message}}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-  {% endif %}
 
-  
-  <div id="images" class="container">
+<!-- Loader -->
+<div class="progress-container d-none">
+  <div class="loader">
+    <div class="inner one1"></div>
+    <div class="inner two2"></div>
+    <div class="inner three3"></div>
+  </div>
+</div>
+
+
+<!-- Loader  End -->
+
+<div id="images" class="container">
     <div class="row">
       <div class="col-md-6 ">
         <p id="img_title "class="font-weight-bolder text-center" >Sample Input</p>
@@ -65,24 +177,90 @@
         <thead>
           <tr>
             <form action='/detection' method='POST' enctype="multipart/form-data">
-              <th><input type="file" name='test_file' class="form-control-file " ></th>
-              <th><input id=predictButton type="submit" value=Detect class="btn btn-dark"></th>
+              <th><input type="file" name='test_file' class="form-control-file " id="fileInput"></th>
+              <th><input id=predictButton type="submit" value=Censor class="btn btn-dark"></th>
             </form>
-            {% if fName %}
-              <form action='/download/{{fName}}' method='POST'>
+            
+              <form action='/download/{{fName}}' method='POST' id="downloadForm">
+                <th><input type="submit" class="btn btn-dark" value=Download id="downloadButton"></th>
+              </form>
+            
+              <!-- <form action='/download_error' method='POST'>
                 <th><input type="submit" class="btn btn-dark" value=Download></th>
               </form>
-            {% else %}
-              <form action='/download_error' method='POST'>
-                <th><input type="submit" class="btn btn-dark" value=Download></th>
-              </form>
-            {% endif %}
+          -->
           </tr>
         </thead>
       </table>
     </div>
+    
   </div>
 </div>
 
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+<script>
+  
+
+
+  $(document).ready(function () {
+
+    
+    $('#predictButton, #downloadButton').prop('disabled', true);
+
+  $('#fileInput').on('change', function() {
+    // Enable the button if a file is selected
+    $('#predictButton').prop('disabled', this.files.length === 0);
+  });
+
+
+    let predictButton = $('#predictButton');
+    let downloadForm = $('#downloadForm');
+    let loaderContainer = $('.progress-container ');
+    // let images = $('#images ');
+    predictButton.click(function (e) {
+      e.preventDefault();
+      // Show the loader
+      loaderContainer.removeClass('d-none');
+      // images.addClass('d-none');
+
+   
+      let formData = new FormData($('form')[0]);
+
+      $.ajax({
+        type: 'POST',
+        url: '/detection',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+
+          //To show the download button 
+          $('#downloadButton').prop('disabled', false);
+
+          // Handle the success response here.
+          console.log(response);
+            // Hide the loader
+            loaderContainer.addClass('d-none');
+          $("#message").removeClass("d-none").fadeIn(1000);
+          // images.removeClass("d-none").fadeIn(1000);
+          
+
+          if(response.fName){
+
+            // Set the form action link dynamically with fname from JSON response
+            downloadForm.attr('action', '/download/' + response.fName);
+          } 
+        },
+        error: function (error) {
+          // Handle the error response here.
+          console.error(error);
+        }
+      });
+    });
+  });
+</script>
 
 {% endblock %}
