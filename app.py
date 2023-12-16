@@ -91,8 +91,6 @@ def detect(test_input):
 def index():
     return render_template(
         "index.html", 
-        ori_image="/static/input.png", 
-        det_image="/static/result.png",
         fName=None,
         message=None
 )
@@ -121,12 +119,13 @@ def detection():
             # carryout detection
             detect(file_path)
             
-            return render_template(
-                "index.html", type="primary", 
-                message="Done!, Image is ready to download", 
-                ori_image=f"static/test/{file.filename}", 
-                det_image=f"static/test_out/{file.filename}",
-                fName=file.filename
+            return jsonify({
+            
+                'done': True,
+                'img':True,
+                "ori_image":f"static/test/{file.filename}", 
+                "det_image":f"static/test_out/{file.filename}",
+                "fName":file.filename}
             )
         # detection on a video
         elif ext in VID_EXTENSIONS:
@@ -147,26 +146,32 @@ def detection():
 
         
             return jsonify({
-            'type': 'primary',
-            'message': 'Done!, Image/Video is ready to download',
+        
+            'done': True,
             'ori_image': f'static/test/{file.filename}',
             'det_image': f'static/test_out/{file.filename}',
             'fName': str(file.filename.split('.')[0])+'.mp4',})
-    # if no input render an error message        
-    else:
-        return render_template(
-                "index.html", type="danger", 
-                message="Please upload a file.",
-                ori_image="static/input.png", 
-                det_image="static/result.png",
-                fName=None
-            )
+        
+        else:
+            return jsonify({
+            'message': 'Format Not supported',
+            'not_support':True})
 
-# # download the detection
-# @app.route("/download/<fName>", methods=["GET", "POST"])
-# def download(fName):
-#     det_path = f"static/test_out/{fName}"
-#     return send_file(det_path, as_attachment=True)
+    # # if no input render an error message        
+    # else:
+    #     return render_template(
+    #             "index.html", type="danger", 
+    #             message="Please upload a file.",
+    #             ori_image="static/input.png", 
+    #             det_image="static/result.png",
+    #             fName=None
+    #         )
+
+# download the detection
+@app.route("/download/<fName>", methods=["GET", "POST"])
+def download(fName):
+    det_path = f"static/test_out/{fName}"
+    return send_file(det_path, as_attachment=True)
 
 # # download error handling
 # @app.route("/download_error", methods=["GET", "POST"])

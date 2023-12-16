@@ -122,12 +122,8 @@ nav .navbar-brand
 } */
 
 
-
-/* loader  */
-
-
-
-
+/* 
+loader 
 .spinner-wrapper {
   position: fixed;
   top: 0;
@@ -157,10 +153,10 @@ nav .navbar-brand
   40% { 
       transform: scale(1.0);
   }
-}
+} */
 
 /* Add this class to hide the spinner when the content is loaded */
-.spinner-wrapper.loaded {
+/* .spinner-wrapper.loaded {
   display: none;
 }
 
@@ -234,4 +230,4 @@ nav .navbar-brand
   100% {
     transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
   }
-}
+} */
