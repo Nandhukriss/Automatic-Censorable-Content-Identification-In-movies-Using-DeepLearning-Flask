@@ -61,6 +61,7 @@ $(document).ready(function () {
           //To show the download button 
           $('#downloadButton').prop('disabled', false);
           $("#message").removeClass("d-none").fadeIn(1000);
+          $('#resultPictureCaption').text('Here is Your Result');
         }
         if(response.not_support){
 
