@@ -24,4 +24,5 @@ In flask, Default port is `5000`
 ## 3.Video Censoring 
 ![videoprocessing](https://github.com/Nandhukriss/Automatic-Censorable-Content-Identification-In-movies-Using-DeepLearning-Flask/assets/103727372/e075df09-d515-4528-a5e0-3aaaa1b25875)
 ## 4.Result
-![videoresult](https://github.com/Nandhukriss/Automatic-Censorable-Content-Identification-In-movies-Using-DeepLearning-Flask/assets/103727372/c3bb8d65-006d-4584-967f-dadfa3f08364)
+![result1](https://github.com/Nandhukriss/Automatic-Censorable-Content-Identification-In-movies-Using-DeepLearning-Flask/assets/103727372/daf77342-ead3-4a82-a8ac-66ed8879f78e)
+
