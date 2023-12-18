@@ -42,8 +42,8 @@ def embed_audio_ffmpeg(video_path, audio_path, output_path):
     # Set a temporary output path
     temp_output_path = output_path.replace('.mp4', '_temp.mp4')
 
-    # Run FFmpeg to embed audio
-    subprocess.run(['ffmpeg', '-y', '-i', video_path, '-i', audio_path, '-c:v', 'copy', '-c:a', 'aac', '-strict', 'experimental', temp_output_path])
+   # Run FFmpeg to embed audio with H.264 video codec
+    subprocess.run(['ffmpeg', '-y', '-i', video_path, '-i', audio_path, '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-strict', 'experimental', temp_output_path])
 
     # Replace the original file with the temporary one
     shutil.move(temp_output_path, output_path)
@@ -123,7 +123,7 @@ def detection():
             
                 'done': True,
                 'img':True,
-                "ori_image":f"static/test/{file.filename}", 
+         
                 "det_image":f"static/test_out/{file.filename}",
                 "fName":file.filename}
             )
@@ -148,8 +148,9 @@ def detection():
             return jsonify({
         
             'done': True,
-            'ori_image': f'static/test/{file.filename}',
-            'det_image': f'static/test_out/{file.filename}',
+            'video':True,
+          
+            'det_video': f'static/test_out/{file.filename}',
             'fName': str(file.filename.split('.')[0])+'.mp4',})
         
         else:
@@ -171,18 +172,9 @@ def detection():
 @app.route("/download/<fName>", methods=["GET", "POST"])
 def download(fName):
     det_path = f"static/test_out/{fName}"
-    return send_file(det_path, as_attachment=True)
+    return send_file(det_path, as_attachment=True,mimetype='video/mp4')
 
-# # download error handling
-# @app.route("/download_error", methods=["GET", "POST"])
-# def download_error():
-#     return render_template(
-#             "index.html", type="danger", 
-#             message="Please upload a file and carryout detection.",
-#             ori_image="static/input.png", 
-#             det_image="static/result.png",
-#             fName=None
-#         )
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    
+
     $('#predictButton, #downloadButton').prop('disabled', true);
 
   $('#fileInput').on('change', function(event) {
@@ -15,18 +15,58 @@ $(document).ready(function () {
         $("#message").addClass("d-none");
         $("#unsupported-message").addClass("d-none");
 
-    const allowedExtensions = ['bmp', 'jpg', 'jpeg', 'png', 'tif', 'tiff', 'dng', 'webp', 'mpo', 'JPG'];
+    const allowedExtensionsForPic = ['bmp', 'jpg', 'jpeg', 'png', 'tif', 'tiff', 'dng', 'webp', 'mpo', 'JPG']
+    const allowedExtensionsForVideo = ['mov', 'avi', 'mp4', 'mpg', 'mpeg', 'm4v', 'wmv', 'mkv']
 
-    if (file && allowedExtensions.includes(file.name.split('.').pop().toLowerCase())) {
+    if (file && allowedExtensionsForPic.includes(file.name.split('.').pop().toLowerCase())) {
         const reader = new FileReader();
         reader.onload = function (e) {
-            let placeholderResult='https://th.bing.com/th/id/R.c3e6917c371f3eec0d4af6b4ab5cd652?rik=xOBRQz8KrvenFw&riu=http%3a%2f%2fwww.pixelstalk.net%2fwp-content%2fuploads%2f2016%2f10%2fDark-Gray-Photos-Free-Download.png&ehk=eMIx7cw1SzVnUiD1Mb5A44iSiESOrUViHOir52HCX8k%3d&risl=&pid=ImgRaw&r=0'
             $('#uploadedImage').attr('src', e.target.result);
             $('#resultPicture').attr('src', e.target.result);
 
 
             $('#uploadedImageCaption').text(file.name);
             $('#resultPictureCaption').text('To View Result Click Censor');
+
+        };
+        reader.readAsDataURL(file);
+    }
+    if (file && allowedExtensionsForVideo.includes(file.name.split('.').pop().toLowerCase())) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          $('#inputVideoPic').html(`
+          
+          <div class='container d-flex justify-content-center  align-items-center flex-column '>
+          <h1 class="font-weight-bold text-center mt-2" id="uploadedVideoCaption">To Censor this Click Censor Button🕵🏼</h1>
+          <video
+            id="my-video"
+            class="video-js"
+            controls
+            preload="auto"
+            width="800"
+            height="450"
+            poster="https://github.com/Nandhukriss/Automatic-Censorable-Content-Identification-In-movies-Using-DeepLearning-Flask/assets/103727372/ae0b3abf-f1a0-48a4-843c-599b105b1bbb"
+            data-setup="{}"
+          >
+            <source src="ayan.mp4" type="video/mp4" class='uploadedVideo'/>
+            <source src="ayan.mp4" type="video/webm" class='uploadedVideo' />
+            <p class="vjs-no-js">
+              To view this video please enable JavaScript, and consider upgrading to a
+              web browser that
+              <a href="https://videojs.com/html5-video-support/" target="_blank">
+                supports HTML5 video
+              </a>
+            </p>
+            </video>
+            </div>
+   
+
+        `);
+        
+        
+        $('#my-video').attr('style', 'width: 800px; height: 450px;');
+            $('.uploadedVideo').attr('src', e.target.result);
+
 
         };
         reader.readAsDataURL(file);
@@ -70,7 +110,42 @@ $(document).ready(function () {
         if(response.img){
           $('#resultPicture').attr('src', response.det_image);
         }
+        if(response.video){
 
+
+
+
+    // Create a new video element with the censored video source
+    const newVideoElement = `
+        <video
+            id="my-video"
+            class="video-js"
+            controls
+            preload="auto"
+            width="800"
+            height="450"
+            poster="https://github.com/Nandhukriss/Automatic-Censorable-Content-Identification-In-movies-Using-DeepLearning-Flask/assets/103727372/638f1a0f-d26f-41ad-8b25-83950faf840c"
+            data-setup="{}"
+        >
+            <source src="${response.det_video}" type="video/mp4" class='uploadedVideo'/>
+            <source src="${response.det_video}" type="video/webm" class='uploadedVideo' />
+            <p class="vjs-no-js">
+                To view this video please enable JavaScript, and consider upgrading to a
+                web browser that
+                <a href="https://videojs.com/html5-video-support/" target="_blank">
+                    supports HTML5 video
+                </a>
+            </p>
+        </video>`;
+        
+        // Replace the existing video container with the new video element
+        $('#inputVideoPic').html(newVideoElement);
+        $('#my-video').attr('style', 'width: 800px; height: 450px;');
+
+    // Update the caption
+    $('#uploadedVideoCaption').text('🎊 Here is the Censored Video 🎊');
+
+        }
 
           // Handle the success response here.
           console.log(response);
@@ -92,3 +167,5 @@ $(document).ready(function () {
       });
     });
   });
+
+
