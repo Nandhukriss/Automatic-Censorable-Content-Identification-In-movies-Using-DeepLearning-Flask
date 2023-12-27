@@ -46,8 +46,4 @@ In flask, Default port is `5000`
 ## 4.Result
 ![result1](https://github.com/Nandhukriss/Automatic-Censorable-Content-Identification-In-movies-Using-DeepLearning-Flask/assets/103727372/daf77342-ead3-4a82-a8ac-66ed8879f78e)
 
-## Contributing
 
-Contributions are always welcome!
-
-See `contributing.md` for ways to get started.
