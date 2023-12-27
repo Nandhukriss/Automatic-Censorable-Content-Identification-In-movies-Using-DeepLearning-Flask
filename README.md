@@ -8,15 +8,15 @@
 
 ## FAQ
 
-#### Can the system detect both images and videos?
+#### 1. Can the system detect both images and videos?
 
 Yes, the system is capable of detecting both images and videos
 
-#### How does the system detect censorable contents?
+#### 2. How does the system detect censorable contents?
 
 The system utilizes the YOLOv5 algorithm for content detection. YOLOv5 (You Only Look Once) is an object detection algorithm that can quickly and accurately detect objects, including censorable content, in images and videos.
 
-#### Where were the models trained?
+#### 4. Where were the models trained?
 
 The models were trained on a platform called Roboflow, and I used my custom dataset for the training process. Roboflow provides tools for managing and training computer vision models with custom datasets.
 
