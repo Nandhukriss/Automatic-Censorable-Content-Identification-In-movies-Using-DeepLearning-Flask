@@ -1,5 +1,11 @@
 # ACCIM
 
+## Tech Stack
+
+**Client:** HTML, CSS, Bootstrap,Javascript 
+
+**Server:** Flask
+
 ## Installation
 
 Install with pip:
