@@ -1,6 +1,5 @@
 $(document).ready(function () {
 
-
     $('#predictButton, #downloadButton').prop('disabled', true);
 
   $('#fileInput').on('change', function(event) {
@@ -117,6 +116,8 @@ $(document).ready(function () {
 
     // Create a new video element with the censored video source
     const newVideoElement = `
+    <div class='container d-flex justify-content-center  align-items-center flex-column '>
+    <h1 class="font-weight-bold text-center mt-2" id="uploadedVideoCaption">🎊 Here is the Censored Video 🎊</h1>
         <video
             id="my-video"
             class="video-js"
@@ -136,14 +137,15 @@ $(document).ready(function () {
                     supports HTML5 video
                 </a>
             </p>
-        </video>`;
+        </video>
+        </div>`
+        ;
         
         // Replace the existing video container with the new video element
         $('#inputVideoPic').html(newVideoElement);
         $('#my-video').attr('style', 'width: 800px; height: 450px;');
 
-    // Update the caption
-    $('#uploadedVideoCaption').text('🎊 Here is the Censored Video 🎊');
+
 
         }
 
