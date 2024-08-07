@@ -1,1 +1,6 @@
 * text eol=lf
+
+static/test_out/
+static/test/
+__pycache__
+.vscode
