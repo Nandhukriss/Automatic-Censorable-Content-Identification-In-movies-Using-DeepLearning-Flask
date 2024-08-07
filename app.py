@@ -92,11 +92,11 @@ def index():
     return render_template(
         "index.html", 
         fName=None,
-        message=None
+        message=None, current_page='home'
 )
 @app.route("/about")
 def about():
-    return render_template("about.html")
+    return render_template("about.html",current_page='about')
 
 
 
